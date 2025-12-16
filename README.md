@@ -41,7 +41,7 @@
 ## Этапы выполнения:
 
 
-### [Создание облачной инфраструктуры](https://github.com/vladislav-arzybov/HOMEWORK/blob/main/23_Diplom/01_backend/01_backend.md)
+### [Создание облачной инфраструктуры](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/01_backend/01_backend.md)
 
 Для начала необходимо подготовить облачную инфраструктуру в ЯО при помощи [Terraform](https://www.terraform.io/).
 
@@ -71,7 +71,7 @@
 - [backend + network](https://github.com/vladislav-arzybov/HOMEWORK/tree/main/23_Diplom/01_backend/02_network)
 
 ---
-### [Создание Kubernetes кластера](https://github.com/vladislav-arzybov/HOMEWORK/blob/main/23_Diplom/02_k8s/02_k8s.md)
+### [Создание Kubernetes кластера](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/02_k8s/02_k8s.md)
 
 На этом этапе необходимо создать [Kubernetes](https://kubernetes.io/ru/docs/concepts/overview/what-is-kubernetes/) кластер на базе предварительно созданной инфраструктуры.   Требуется обеспечить доступ к ресурсам из Интернета.
 
@@ -97,7 +97,7 @@
 - [Ansible](https://github.com/vladislav-arzybov/HOMEWORK/tree/main/23_Diplom/02_k8s/02_infra/ansible)
 
 ---
-### [Создание тестового приложения](https://github.com/vladislav-arzybov/HOMEWORK/blob/main/23_Diplom/03_dockerfile/03_dockerfile.md)
+### [Создание тестового приложения](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/03_dockerfile/03_dockerfile.md)
 
 Для перехода к следующему этапу необходимо подготовить тестовое приложение, эмулирующее основное приложение разрабатываемое вашей компанией.
 
@@ -115,7 +115,7 @@
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
 
 ---
-### [Подготовка cистемы мониторинга и деплой приложения](https://github.com/vladislav-arzybov/HOMEWORK/blob/main/23_Diplom/04_grafana/04_grafana.md)
+### [Подготовка cистемы мониторинга и деплой приложения](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/04_grafana/04_grafana.md)
 
 Уже должны быть готовы конфигурации для автоматического создания облачной инфраструктуры и поднятия Kubernetes кластера.  
 Теперь необходимо подготовить конфигурационные файлы для настройки нашего Kubernetes кластера.
@@ -127,7 +127,7 @@
 Способ выполнения:
 1. Воспользоваться пакетом [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus), который уже включает в себя [Kubernetes оператор](https://operatorhub.io/) для [grafana](https://grafana.com/), [prometheus](https://prometheus.io/), [alertmanager](https://github.com/prometheus/alertmanager) и [node_exporter](https://github.com/prometheus/node_exporter). Альтернативный вариант - использовать набор helm чартов от [bitnami](https://github.com/bitnami/charts/tree/main/bitnami).
 
-### [Деплой инфраструктуры в terraform pipeline](https://github.com/vladislav-arzybov/HOMEWORK/blob/main/23_Diplom/05_atlantis/05_atlantis.md)
+### [Деплой инфраструктуры в terraform pipeline](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/05_atlantis/05_atlantis.md)
 
 1. Если на первом этапе вы не воспользовались [Terraform Cloud](https://app.terraform.io/), то задеплойте и настройте в кластере [atlantis](https://www.runatlantis.io/) для отслеживания изменений инфраструктуры. Альтернативный вариант 3 задания: вместо Terraform Cloud или atlantis настройте на автоматический запуск и применение конфигурации terraform из вашего git-репозитория в выбранной вами CI-CD системе при любом комите в main ветку. Предоставьте скриншоты работы пайплайна из CI/CD системы.
 
@@ -138,7 +138,7 @@
 4. Http доступ на 80 порту к тестовому приложению.
 5. Atlantis или terraform cloud или ci/cd-terraform
 ---
-### [Установка и настройка CI/CD](https://github.com/vladislav-arzybov/HOMEWORK/blob/main/23_Diplom/06_cicd/06_cicd.md)
+### [Установка и настройка CI/CD](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/06_cicd/06_cicd.md)
 
 Осталось настроить ci/cd систему для автоматической сборки docker image и деплоя приложения при изменении кода.
 
