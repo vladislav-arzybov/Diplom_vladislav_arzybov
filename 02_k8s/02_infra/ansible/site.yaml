@@ -1,0 +1,109 @@
+---
+- name: Автоматическая настройка master-node-1
+  hosts: master-node-1
+  
+  tasks:
+
+    - block:
+
+        #Первиная настройка master-node-1
+        - name: Установка необходимых пакетов
+          become: true #root
+          ansible.builtin.apt:
+            name: 
+              - ansible
+              - python3-pip
+            state: present #проверка установки
+            update_cache: yes
+
+        - name: Копирование kubespray из github репозитория
+          ansible.builtin.git:
+            repo: https://github.com/kubernetes-sigs/kubespray.git
+            dest: "/home/{{ user }}/kubespray"
+
+        - name: Установка зависимостей из requirements.txt
+          ansible.builtin.pip:
+            requirements: "/home/{{ user }}/kubespray/requirements.txt"
+
+        - name: Копирование содержимого папки inventory/sample в папку inventory/mycluster
+          ansible.builtin.copy:
+            src: "/home/{{ user }}/kubespray/inventory/sample/"
+            dest: "/home/{{ user }}/kubespray/inventory/mycluster/"
+            remote_src: true
+
+        - name: Копирование файла inventory.ini
+          ansible.builtin.copy:
+            src: ./inventory/inventory.ini #указываем путь относительно site.yaml
+            dest: "/home/{{ user }}/kubespray/inventory/mycluster/"
+
+        - name: Копирование на master-node-1 приватного ключа
+          ansible.builtin.copy:
+            src: ~/.ssh/id_rsa
+            dest: ./.ssh
+            owner: "{{ user }}"
+            mode: '0600'
+
+        #Добавление внешнего IP-адреса для подключения к кластеру с локального хоста
+        - name: Добавление внешнего IP-адреса в TLS-сертификат API-сервера Kubernetes
+          ansible.builtin.lineinfile:
+            path: "/home/{{ user }}/kubespray/inventory/mycluster/group_vars/all/all.yml"
+            regexp: '^supplementary_addresses_in_ssl_keys:' #Поиск строки с добавлением при отсутствии
+            line: "supplementary_addresses_in_ssl_keys: [{{ hostvars[inventory_hostname].ansible_host }}]"
+            create: yes
+
+        - name: Пауза для ручного запуска Kubespray
+          ansible.builtin.pause:
+            prompt: |
+              Первичная настройка завершена. Далее необходимо:
+              1) Подключиться к master-node-1 вручную выполнив команду: ssh {{ user }}@{{ hostvars[inventory_hostname].ansible_host }}
+              2) Перейти в каталог kubespray: cd kubespray 
+              2) Запустить команду для настройки k8s кластера: ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml -b -v
+              
+              - Когда установка кластера на сервере master-node-1 будет завершена нажми ENTER для завершения настройки.
+
+              - Если необходимо отменить дальнейшую установку нажмите Ctrl+c, затем "a".
+
+        #Завершающий этап настройки master-node-1
+        - name: Создание директории .kube на master-node-1
+          ansible.builtin.file:
+            path: "/home/{{ user }}/.kube"
+            state: directory
+            owner: "{{ user }}"
+            group: "{{ user }}"
+            mode: '0755'
+
+        - name: Копирование kubeconfig из /etc/kubernetes/admin.conf
+          become: true
+          ansible.builtin.command:
+            cmd: cp /etc/kubernetes/admin.conf "/home/{{ user }}/.kube/config"
+
+        - name: Изменение владельца kubeconfig
+          become: true
+          ansible.builtin.file:
+            path: "/home/{{ user }}/.kube/config"
+            owner: "{{ user }}"
+            group: "{{ user }}"
+            mode: '0600'
+
+        #Добавление в конфиг внешнего IP-адреса
+        - name: Замена адреса в kubeconfig на внешний IP
+          ansible.builtin.lineinfile:
+            path: /home/{{ user }}/.kube/config
+            regexp: '^    server: https:'
+            line: '    server: https://{{ hostvars[inventory_hostname].ansible_host }}:6443'
+
+        - name: Копирование kubeconfig на локальную машину
+          ansible.builtin.fetch:
+            src: "/home/{{ user }}/.kube/config"
+            dest: ~/.kube/
+            flat: yes # сохранение в целевом каталоге
+
+        - name: Копирование kubeconfig для внутреннего доступа
+          become: true
+          ansible.builtin.command:
+            cmd: cp /etc/kubernetes/admin.conf "/home/{{ user }}/.kube/config"
+
+      rescue:
+        - name: Ошибка при настройке master-node-1
+          ansible.builtin.debug:
+            msg: "ERROR: Ошибка при настройке master-node-1!"

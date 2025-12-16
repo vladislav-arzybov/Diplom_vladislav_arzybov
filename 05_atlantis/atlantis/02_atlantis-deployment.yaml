@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlantis
+  namespace: atlantis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlantis
+  template:
+    metadata:
+      labels:
+        app: atlantis
+    spec:
+      containers:
+        - name: atlantis
+          image: ghcr.io/runatlantis/atlantis:v0.34.0
+          imagePullPolicy: IfNotPresent
+
+          args:
+            - server
+            - --port=4141
+            - --config=/etc/atlantis/repos.yaml
+            - --repo-config=/etc/atlantis/atlantis.yaml
+            - --gh-user=vladislav-arzybov
+            - --repo-allowlist=github.com/vladislav-arzybov/*
+            - --gh-token=$(GITHUB_TOKEN)
+
+          env:
+            - name: TF_CLI_CONFIG_FILE
+              value: /etc/terraform.d/terraform.rc
+
+            - name: YC_SERVICE_ACCOUNT_KEY_FILE
+              value: /home/atlantis/authorized_key.json
+
+            - name: TF_VAR_ssh_public_key
+              valueFrom:
+                secretKeyRef:
+                  name: ssh-public-key
+                  key: ssh_public_key
+
+          envFrom:
+            - secretRef:
+                name: atlantis-env
+
+          ports:
+            - name: http
+              containerPort: 4141
+
+          volumeMounts:
+            - name: atlantis-config
+              mountPath: /etc/atlantis/atlantis.yaml
+              subPath: atlantis.yaml
+              readOnly: true
+            - name: atlantis-config
+              mountPath: /etc/atlantis/repos.yaml
+              subPath: repos.yaml
+              readOnly: true
+
+            - name: terraform-cli-config
+              mountPath: /etc/terraform.d/terraform.rc
+              subPath: terraform.rc
+              readOnly: true
+
+            - name: yc-sa-key
+              mountPath: /home/atlantis/authorized_key.json
+              subPath: authorized_key.json
+              readOnly: true
+
+      volumes:
+        - name: atlantis-config
+          configMap:
+            name: atlantis-config
+
+        - name: terraform-cli-config
+          configMap:
+            name: terraform-cli-config
+
+        - name: yc-sa-key
+          secret:
+            secretName: atlantis-yc-sa

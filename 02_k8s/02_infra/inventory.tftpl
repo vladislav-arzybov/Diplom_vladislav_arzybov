@@ -1,0 +1,26 @@
+[all]
+%{ for hostname, node in masters ~}
+${hostname} ansible_host=${node.external_ip} ip=${node.internal_ip}
+%{ endfor ~}
+%{ for hostname, node in workers ~}
+${hostname} ansible_host=${node.external_ip} ip=${node.internal_ip}
+%{ endfor ~}
+
+[kube_control_plane]
+%{ for hostname, node in masters ~}
+${hostname}
+%{ endfor ~}
+
+[etcd]
+%{ for hostname, node in masters ~}
+${hostname}
+%{ endfor ~}
+
+[kube_node]
+%{ for hostname, node in workers ~}
+${hostname}
+%{ endfor ~}
+
+[k8s_cluster:children]
+kube_control_plane
+kube_node

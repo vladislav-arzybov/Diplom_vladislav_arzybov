@@ -1,0 +1,27 @@
+name: Build and Push
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: arzybov/test-app-nginx:1.0.${{ github.run_number }}
