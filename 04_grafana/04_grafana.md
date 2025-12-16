@@ -196,4 +196,4 @@ spec:
 
 ---
 
-> Дальнейшая настройка доступа будет производиться в блоке : [Деплой инфраструктуры в terraform pipeline](https://github.com/vladislav-arzybov/HOMEWORK/blob/main/23_Diplom/05_atlantis/05_atlantis.md)
+> Дальнейшая настройка доступа будет производиться в блоке : [Деплой инфраструктуры в terraform pipeline](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/05_atlantis/05_atlantis.md)
