@@ -364,6 +364,160 @@ resource "yandex_lb_network_load_balancer" "nginx" {
 
 > После выполнения проверки откроется окно с инструкциями
 
+<details>
+  <summary>Plan</summary>
+
+```
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
++ create
+
+Terraform will perform the following actions:
+
+  # local_file.inventory_kubespray will be created
++ resource "local_file" "inventory_kubespray" {
+      + content              = <<-EOT
+            [all]
+            master-node-1 ansible_host=84.201.132.33 ip=10.0.1.4
+            worker-node-1 ansible_host=158.160.0.253 ip=10.0.2.27
+            worker-node-2 ansible_host=158.160.219.173 ip=10.0.3.10
+            
+            [kube_control_plane]
+            master-node-1
+            
+            [etcd]
+            master-node-1
+            
+            [kube_node]
+            worker-node-1
+            worker-node-2
+            
+            [k8s_cluster:children]
+            kube_control_plane
+            kube_node
+        EOT
+      + content_base64sha256 = (known after apply)
+      + content_base64sha512 = (known after apply)
+      + content_md5          = (known after apply)
+      + content_sha1         = (known after apply)
+      + content_sha256       = (known after apply)
+      + content_sha512       = (known after apply)
+      + directory_permission = "0777"
+      + file_permission      = "0777"
+      + filename             = "ansible/inventory/inventory.ini"
+      + id                   = (known after apply)
+    }
+
+  # yandex_lb_network_load_balancer.grafana will be created
++ resource "yandex_lb_network_load_balancer" "grafana" {
+      + allow_zonal_shift   = (known after apply)
+      + created_at          = (known after apply)
+      + deletion_protection = (known after apply)
+      + folder_id           = (known after apply)
+      + id                  = (known after apply)
+      + name                = "grafana"
+      + region_id           = (known after apply)
+      + type                = "external"
+
+      + attached_target_group {
+          + target_group_id = (known after apply)
+
+          + healthcheck {
+              + healthy_threshold   = 2
+              + interval            = 2
+              + name                = "healthcheck"
+              + timeout             = 1
+              + unhealthy_threshold = 2
+
+              + tcp_options {
+                  + port = 30001
+                }
+            }
+        }
+
+      + listener {
+          + name        = "grafana-listener"
+          + port        = 80
+          + protocol    = (known after apply)
+          + target_port = 30001
+
+          + external_address_spec {
+              + address    = (known after apply)
+              + ip_version = "ipv4"
+            }
+        }
+    }
+
+  # yandex_lb_network_load_balancer.nginx will be created
++ resource "yandex_lb_network_load_balancer" "nginx" {
+      + allow_zonal_shift   = (known after apply)
+      + created_at          = (known after apply)
+      + deletion_protection = (known after apply)
+      + folder_id           = (known after apply)
+      + id                  = (known after apply)
+      + name                = "nginx"
+      + region_id           = (known after apply)
+      + type                = "external"
+
+      + attached_target_group {
+          + target_group_id = (known after apply)
+
+          + healthcheck {
+              + healthy_threshold   = 2
+              + interval            = 2
+              + name                = "healthcheck"
+              + timeout             = 1
+              + unhealthy_threshold = 2
+
+              + tcp_options {
+                  + port = 30002
+                }
+            }
+        }
+
+      + listener {
+          + name        = "nginx-listener"
+          + port        = 80
+          + protocol    = (known after apply)
+          + target_port = 30002
+
+          + external_address_spec {
+              + address    = (known after apply)
+              + ip_version = "ipv4"
+            }
+        }
+    }
+
+  # yandex_lb_target_group.k8s-nlb will be created
++ resource "yandex_lb_target_group" "k8s-nlb" {
+      + created_at      = (known after apply)
+      + description     = (known after apply)
+      + folder_id       = (known after apply)
+      + id              = (known after apply)
+      + labels          = (known after apply)
+      + name            = "k8s-balancer-group"
+      + region_id       = (known after apply)
+      + target_group_id = (known after apply)
+
+      + target {
+          + address   = "10.0.1.4"
+          + subnet_id = "e9bsoiol2c04lp3ddfnd"
+        }
+      + target {
+          + address   = "10.0.2.27"
+          + subnet_id = "e2lljuk1vt6rjao1p4vt"
+        }
+      + target {
+          + address   = "10.0.3.10"
+          + subnet_id = "fl837lr2ou8f54g1k60i"
+        }
+    }
+
+Plan: 4 to add, 0 to change, 0 to destroy.
+```
+
+</details>
+
 <img width="851" height="653" alt="изображение" src="https://github.com/user-attachments/assets/4c30bb05-ff9e-4c26-9ba9-559023c2dd66" />
 
 > Чтобы выполнить terrafform apply необходимо в поле ```Add a comment``` указать ```atlantis apply -d 02_k8s/02_infra``` и нажать Comment
@@ -372,13 +526,31 @@ resource "yandex_lb_network_load_balancer" "nginx" {
 
 > Изменения внесены успешно
 
+<details>
+  <summary>Apply</summary>
+
+```
+local_file.inventory_kubespray: Creating...
+yandex_lb_target_group.k8s-nlb: Creating...
+local_file.inventory_kubespray: Creation complete after 0s [id=27d3f23e99db174f4bfccac282c65a898be437de]
+yandex_lb_target_group.k8s-nlb: Creation complete after 2s [id=enpv1dchalo5nf6emo0i]
+yandex_lb_network_load_balancer.grafana: Creating...
+yandex_lb_network_load_balancer.grafana: Creation complete after 2s [id=enp1a5i8nj8s110kbsh3]
+yandex_lb_network_load_balancer.nginx: Creating...
+yandex_lb_network_load_balancer.nginx: Creation complete after 4s [id=enplsmnitb68orfoanl1]
+
+Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+```
+
+</details>
+
 <img width="874" height="612" alt="изображение" src="https://github.com/user-attachments/assets/d73d71e0-8235-4825-8399-7c2d6a0fdf5e" />
 
 <img width="1251" height="610" alt="изображение" src="https://github.com/user-attachments/assets/49ea777f-0368-499e-bcc0-ab7f8067123b" />
 
 > Проверяем наличие созданных балансировщиков:
 
-<img width="1074" height="129" alt="изображение" src="https://github.com/user-attachments/assets/6e3f2f2a-793a-4fb6-9dc2-e1008964ef27" />
+<img width="1069" height="160" alt="изображение" src="https://github.com/user-attachments/assets/1803d701-7800-4f2b-a7ea-555b2d9de3bb" />
 
 > Допполнительно для внесения изменений в main ветку и снятия блокировки в atlantis, необходимо нажать ```Merge pull request```
 
@@ -400,22 +572,23 @@ resource "yandex_lb_network_load_balancer" "nginx" {
 
 2. Http доступ на 80 порту к web интерфейсу grafana.
 
-> http://158.160.209.209:80
+> http://130.193.35.57:80
 > Логин: admin
 > Пароль: admin
 
 3. Дашборды в grafana отображающие состояние Kubernetes кластера.
    
-<img width="1913" height="991" alt="изображение" src="https://github.com/user-attachments/assets/506a3035-6142-4d99-95d8-27993179ca8a" />
+<img width="1801" height="957" alt="изображение" src="https://github.com/user-attachments/assets/9481e03b-7b12-464a-85ed-36b72a150307" />
 
 4. Http доступ на 80 порту к тестовому приложению.
 
-> http://158.160.217.80/
+> http://158.160.201.83:80
 
-<img width="793" height="141" alt="изображение" src="https://github.com/user-attachments/assets/2b656c92-2d80-434a-bef2-d2c31bc53a3f" />
+<img width="682" height="174" alt="изображение" src="https://github.com/user-attachments/assets/df230efb-5081-4f1d-acf3-029535420764" />
 
 5. Atlantis или terraform cloud или ci/cd-terraform
 
-> http://158.160.49.136:30003/
+> http://84.201.132.33:30003/
 
-<img width="1309" height="651" alt="изображение" src="https://github.com/user-attachments/assets/4153ac5d-e33d-48bf-a8c8-4aba55617d9a" />
+<img width="1575" height="731" alt="изображение" src="https://github.com/user-attachments/assets/f9989086-288f-415e-9589-ce92d2a3dd5e" />
+
