@@ -5,12 +5,12 @@
 
 > Для удобства дипломная работа была разделена на блоки, что позволило лучше структурировать процесс её выполнения, а также не перегуружать README.md большим количеством текста и скринов. 
 
-#### - [Создание облачной инфраструктуры](https://github.com/Diplom_vladislav_arzybov/blob/main/01_backend/01_backend.md)
-#### - [Создание Kubernetes кластера](https://github.com/Diplom_vladislav_arzybov/blob/main/02_k8s/02_k8s.md)
-#### - [Создание тестового приложения](https://github.com/Diplom_vladislav_arzybov/blob/main/03_dockerfile/03_dockerfile.md)
-#### - [Подготовка cистемы мониторинга и деплой приложения](https://github.com/Diplom_vladislav_arzybov/blob/main/04_grafana/04_grafana.md)
-#### - [Деплой инфраструктуры в terraform pipeline](https://github.com/Diplom_vladislav_arzybov/blob/main/05_atlantis/05_atlantis.md)
-#### - [Установка и настройка CI/CD](https://github.com/Diplom_vladislav_arzybov/blob/main/06_cicd/06_cicd.md)
+#### - [Создание облачной инфраструктуры](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/01_backend/01_backend.md)
+#### - [Создание Kubernetes кластера](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/02_k8s/02_k8s.md)
+#### - [Создание тестового приложения](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/03_dockerfile/03_dockerfile.md)
+#### - [Подготовка cистемы мониторинга и деплой приложения](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/04_grafana/04_grafana.md)
+#### - [Деплой инфраструктуры в terraform pipeline](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/05_atlantis/05_atlantis.md)
+#### - [Установка и настройка CI/CD](https://github.com/vladislav-arzybov/Diplom_vladislav_arzybov/blob/main/06_cicd/06_cicd.md)
 
 ---
 ---
